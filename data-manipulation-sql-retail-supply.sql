@@ -82,3 +82,12 @@ on fc.category_id = c.category_id
 group by 1, 2, 3, 4
 order by 1;
 
+# Identify the out of stock films:
+select film_name, film_id from inventory_rep
+where in_stock = 0;
+
+# How many films are out of stock:
+select count(in_stock) as total_number_out_of_stock
+from inventory_rep
+where in_stock = 0;
+
