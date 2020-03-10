@@ -49,4 +49,7 @@ film as f left join inventory as i
 on f.film_id = i.film_id
 group by 1, 2, 3;
 
-
+select
+c.name as category_name, f.title as film_name, f.film_id, i.store_id
+from film as f
+left join inventory as i
