@@ -49,15 +49,36 @@ film as f left join inventory as i
 on f.film_id = i.film_id
 group by 1, 2, 3;
 
+# Add category for each film, and return how many of them in stock:
 select
 c.name as category_name, f.title as film_name,
 f.film_id, i.store_id, count(i.film_id) as in_stock
-from film as f
+from 
+film as f
 left join inventory as i
-on f.film_id=i.film_id
+on f.film_id = i.film_id
 left join film_category as fc 
-on f.film_id=fc.film_id
+on f.film_id = fc.film_id
 left join
-category as c on fc.category_id=c.category_id
-group by 1,2,3,4;
+category as c 
+on fc.category_id = c.category_id
+group by 1, 2, 3, 4
+order by 1;
+
+# Save and duplicate the table for later use:
+create table inventory_rep as 
+select 
+c.name as category_name, f.title as film_name,
+f.film_id, i.store_id, count(i.film_id) as in_stock
+from 
+film as f
+left join inventory as i
+on f.film_id = i.film_id
+left join film_category as fc 
+on f.film_id = fc.film_id
+left join
+category as c 
+on fc.category_id = c.category_id
+group by 1, 2, 3, 4
+order by 1;
 
