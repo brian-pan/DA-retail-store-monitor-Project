@@ -83,11 +83,53 @@ group by 1, 2, 3, 4
 order by 1;
 
 # Identify the out of stock films:
-select film_name, film_id from inventory_rep
+select film_name as films_name_require_reload, 
+film_id as film_id from inventory_rep
 where in_stock = 0;
 
 # How many films are out of stock:
 select count(in_stock) as total_number_out_of_stock
 from inventory_rep
 where in_stock = 0;
+
+# The payment table records each payment made by a customer,
+# we are interested in the monthly total payment (revenue):
+select * from payment limit 500;
+
+select substring(payment_date, 1, 7) as monthPayment,
+sum(amount) as revenue
+from payment
+where payment_date between '2005-05-01 00:00:00' and '2005-08-31 23:59:59'
+group by monthPayment; 
+
+# which store sells better:
+select
+store_id, sum(amount) as revenue
+from 
+payment as p
+left join 
+staff as s
+on p.staff_id = s.staff_id
+group by 1;
+
+# clearance determination:
+select f.film_id, f.title as name, c.name as category_name,
+count(i.film_id) as in_stock, count(distinct rental_id) as times_rented 
+from 
+rental as r
+left join inventory as i
+on i.inventory_id = r.inventory_id
+left join film as f
+on i.film_id = f.film_id
+left join film_category as fc
+on f.film_id = fc.film_id
+left join category as c
+on fc.category_id = c.category_id
+group by 1, 2, 3
+# those stock number greater than 20 or those who have a few rental times
+# may be considered as unmarketable:
+having in_stock >= 28 or times_rented <= 8
+order by 4 desc;
+
+
 
